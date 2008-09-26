@@ -35,10 +35,8 @@ class Ec2Mysql
     def show_master_status
       status = Hash.new
       @dbh.select_all("show master status") do |row|
-        File.open("/mnt/mysql/master-status", "w") do |file|
-          row.each_with_name do |v, column|
-            status[column] = v
-          end
+        row.each_with_name do |v, column|
+          status[column] = v
         end
       end
       Ec2Mysql::Log.debug("Master status: #{status.inspect}")
