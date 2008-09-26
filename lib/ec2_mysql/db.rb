@@ -47,9 +47,9 @@ class Ec2Mysql
       command = "CHANGE MASTER TO"
       command += " MASTER_HOST='#{master_status['master_host']}',"
       command += " MASTER_USER='#{master_status['master_user']}',"
-      command += " MASTER_PASS='#{master_status['master_pass']}',"
+      command += " MASTER_PASSWORD='#{master_status['master_password']}',"
       command += " MASTER_LOG_FILE='#{master_status['File']}',"
-      command += " MASTER_LOG_POS='#{master_status['Position']}'"
+      command += " MASTER_LOG_POS=#{master_status['Position']}"
       Ec2Mysql::Log.debug(command)
       @dbh.do(command)
       Ec2Mysql::Log.info("Master is now #{master_status['master_host']} at #{master_status['File']} pos #{master_status['Position']}")

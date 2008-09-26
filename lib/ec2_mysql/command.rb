@@ -66,7 +66,7 @@ class Ec2Mysql
         opts.on("-d DEVICE", "--device DEVICE", "The raw block device to expose a new EBS on for slaves (default /dev/sdh)") do |d|
           @device = d
         end
-        opts.on("-k KERNELDEVICE", "--kernel-device KERNELDEVICE", "The device as seen by the kernel (for mounting)") do |k|
+        opts.on("-r KERNELDEVICE", "--kernel-device KERNELDEVICE", "The device as seen by the kernel (for mounting)") do |k|
           @kernel_device = k
         end
         opts.on("-m MOUNT", "--mount MOUNT", "The mount point for a new EBS slave") do |m|
@@ -116,7 +116,6 @@ class Ec2Mysql
       end
 
       @ec2 = Ec2Mysql::EC2.new(@aws_access_key, @aws_secret_key, @instance_id, @volume_id)
-      @db = Ec2Mysql::DB.new(@mysql_username, @mysql_password, @mysql_host)
     end
     
     def run
@@ -132,6 +131,7 @@ class Ec2Mysql
       @ec2.get_instance_id
       @ec2.find_volume_id
       @ec2.manage_snapshots
+      @db = Ec2Mysql::DB.new(@mysql_username, @mysql_password, @mysql_host)
       @db.flush_tables_with_read_lock
       master_status = @db.show_master_status
       ms_json = File.open(File.join(@mount_point, "master_status.json"), "w")
@@ -156,10 +156,13 @@ class Ec2Mysql
       @ec2.attach_volume(@device)
       system("mount #{@kernel_device} #{@mount_point}")
       system(@mysql_start)
-      master_status = JSON.load(File.join(@mount_point, "master_status.json"))
+      json_file = File.open(File.join(@mount_point, "master_status.json"))
+      master_status = JSON.load(json_file)
+      json_file.close
       master_status["master_host"] = @mysql_host
       master_status["master_user"] = @mysql_rep_username
       master_status["master_password"] = @mysql_rep_password
+      @db = Ec2Mysql::DB.new(@mysql_username, @mysql_password, @mysql_host)
       @db.change_master(master_status)
       @db.slave_start
     end
