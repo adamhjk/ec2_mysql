@@ -131,10 +131,10 @@ class Ec2Mysql
           if volume[:aws_id] == nv[:aws_id]
             case volume[:aws_status]
             when "in-use","available"
-              Ec2Mysql.debug("Volume is available")
+              Ec2Mysql::Log.debug("Volume is available")
               creating = false
             else
-              Ec2Mysql.debug("Volume is #{volume[:aws_status]}")
+              Ec2Mysql::Log.debug("Volume is #{volume[:aws_status]}")
             end
           end
         end
@@ -145,7 +145,7 @@ class Ec2Mysql
     
     def attach_volume(device)
       status = @ec2.attach_volume(@slave_volume, @instance_id, device)
-      Ec2Mysql.debug("Attaching #{@slave_volume} as #{device}")
+      Ec2Mysql::Log.debug("Attaching #{@slave_volume} as #{device}")
       creating = true
       while creating
         status = @ec2.describe_volumes
@@ -153,10 +153,10 @@ class Ec2Mysql
           if volume[:aws_id] == @slave_volume
             case volume[:aws_status]
             when "in-use"
-              Ec2Mysql.debug("Volume is attached")
+              Ec2Mysql::Log.debug("Volume is attached")
               creating = false
             else
-              Ec2Mysql.debug("Volume is #{volume[:aws_status]}")
+              Ec2Mysql::Log.debug("Volume is #{volume[:aws_status]}")
             end
           end
         end
