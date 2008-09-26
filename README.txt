@@ -18,6 +18,7 @@ It's a two step process.  Run the backup on the Master, then run the build on yo
 === Master Backup:
 
 On your master EC2 Node:
+
 	$ sudo ./ec2_mysql -a 'AWS_ID' -s 'AWS_SECRET_KEY' -p 'MYSQL_ROOT' master
 
 === Slave Creation:
