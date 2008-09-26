@@ -122,7 +122,7 @@ class Ec2Mysql
       availability_zone ||= @availability_zone
   
       nv = @ec2.create_volume(snapshot_id, size, availability_zone)
-      Ec2Mysql.info("Created new volume #{nv[:aws_id]} based on #{snapshot_id}")
+      Ec2Mysql::Log.info("Created new volume #{nv[:aws_id]} based on #{snapshot_id}")
       
       creating = true
       while creating
