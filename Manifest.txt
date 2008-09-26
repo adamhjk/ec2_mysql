@@ -1,0 +1,7 @@
+History.txt
+Manifest.txt
+README.txt
+Rakefile
+bin/ec2_mysql
+lib/ec2_mysql.rb
+test/test_ec2_mysql.rb

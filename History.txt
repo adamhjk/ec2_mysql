@@ -1,0 +1,3 @@
+=== 0.1.0 / 2008-09-25
+
+  * Master implementation working
