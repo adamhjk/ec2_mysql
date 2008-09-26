@@ -1,26 +1,41 @@
 = Ec2Mysql
 
-* FIX (url)
-
 == DESCRIPTION:
 
-FIX (describe your package)
+Simplifies setting up new MySQL slaves using EC2 with Elastic Block Devices
 
 == FEATURES/PROBLEMS:
 
-* FIX (list of features or problems)
-
+* Snapshot a master with slave creation information saved as JSON
+  * Keep N backups
+* Create a slave from a given snapshot (or the latest, given a Volume ID)
+  * Deal with both regular and LVM block devices
+  
 == SYNOPSIS:
 
-  FIX (code sample of usage)
+It's a two step process.  Run the backup on the Master, then run the build on your Slave.
+
+=== Master Backup:
+
+On your master EC2 Node:
+	$ sudo ./ec2_mysql -a 'AWS_ID' -s 'AWS_SECRET_KEY' -p 'MYSQL_ROOT' master
+
+=== Slave Creation:
+
+On your slave EC2 Node:
+
+  $ sudo ./ec2_mysql -a 'AWS_ID' -s 'AWS_SECRET_KEY' -U 'MYSQL_REPL_USER' -P 'MYSQL_REPL_PASS' -p 'MYSQL_ROOT' -h 'MYSQL_MASTER_IP_ADDRESS' -v 'MYSQL_MASTER_EBS_VOLUME_ID' slave
 
 == REQUIREMENTS:
 
-* FIX (list of requirements)
+* DBI
+* DBD::Mysql
+* Right AWS
+* JSON
 
 == INSTALL:
 
-* FIX (sudo gem install, anything else)
+Haven't made a gem yet or any packages. :)
 
 == LICENSE:
 
