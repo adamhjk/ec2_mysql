@@ -37,6 +37,10 @@ On your slave EC2 Node:
 
 Haven't made a gem yet or any packages. :)
 
+== BONUS POINTS:
+
+Use Capistrano to dynamically build 100 slaves at the same time.  Watch magic scaling.  Celebrate.
+
 == LICENSE:
 
 See the LICENSE file, but:
