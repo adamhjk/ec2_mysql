@@ -37,6 +37,7 @@ class Ec2Mysql
       @mysql_rep_username = nil
       @mysql_rep_password = nil
       @mysql_host = nil
+      @mysql_start_replication = true
       @instance_id = nil
       @volume_id = nil
       @to_keep = 2
@@ -89,6 +90,9 @@ class Ec2Mysql
         end
         opts.on("-c MYSQL_START", "--mysql-start MYSQL_START", "MySQL Start command") do |c|
           @mysql_start = c
+        end
+        opts.on("-n", "--no-replication", "Do not start MySQL replication") do |n|
+          @mysql_start_replication = false
         end
         opts.on_tail("-l LEVEL", "--loglevel LEVEL", "Set the log level (debug, info, warn, error, fatal)") do |l|
           @log_level = l.to_sym
@@ -156,15 +160,17 @@ class Ec2Mysql
       @ec2.attach_volume(@device)
       system("mount #{@kernel_device} #{@mount_point}")
       system(@mysql_start)
-      json_file = File.open(File.join(@mount_point, "master_status.json"))
-      master_status = JSON.load(json_file)
-      json_file.close
-      master_status["master_host"] = @mysql_host
-      master_status["master_user"] = @mysql_rep_username
-      master_status["master_password"] = @mysql_rep_password
-      @db = Ec2Mysql::DB.new(@mysql_username, @mysql_password, @mysql_host)
-      @db.change_master(master_status)
-      @db.slave_start
+      if @mysql_start_replication
+        json_file = File.open(File.join(@mount_point, "master_status.json"))
+        master_status = JSON.load(json_file)
+        json_file.close
+        master_status["master_host"] = @mysql_host
+        master_status["master_user"] = @mysql_rep_username
+        master_status["master_password"] = @mysql_rep_password
+        @db = Ec2Mysql::DB.new(@mysql_username, @mysql_password, @mysql_host)
+        @db.change_master(master_status)
+        @db.slave_start
+      end
     end
     
   end
