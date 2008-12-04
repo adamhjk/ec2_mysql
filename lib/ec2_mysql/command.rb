@@ -62,7 +62,7 @@ class Ec2Mysql
           @volume_id = v
         end
         opts.on("-k TO_KEEP", "--to-keep TO_KEEP", "Number of Snapshots to Keep (default 2)") do |k|
-          @to_keep = k
+          @to_keep = k.to_i
         end
         opts.on("-d DEVICE", "--device DEVICE", "The raw block device to expose a new EBS on for slaves (default /dev/sdh)") do |d|
           @device = d
