@@ -134,7 +134,7 @@ class Ec2Mysql
     def master
       @ec2.get_instance_id
       @ec2.find_volume_id
-      @ec2.manage_snapshots
+      @ec2.manage_snapshots(@to_keep, @volume_id)
       @db = Ec2Mysql::DB.new(@mysql_username, @mysql_password, @mysql_host)
       @db.flush_tables_with_read_lock
       master_status = @db.show_master_status
